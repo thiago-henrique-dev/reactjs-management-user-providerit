@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { auth } from '../../services/Firebase'
 import alertify from "alertifyjs";
-import './index.css'
 import { Link } from "react-router-dom";
 import logo from '../../assets/logo.svg'
 import { signInWithEmailAndPassword } from "firebase/auth";
+import './index.css'
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -16,8 +16,6 @@ export default function Login() {
     const [passwordError, setPasswordError] = useState('');
     const [emailNotFound, setEmailNotFound] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false);
-
-
 
     const navigate = useNavigate();
 
@@ -38,18 +36,14 @@ export default function Login() {
         }
     };
 
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         setFormSubmitted(true);
 
-        // Validação do email
         if (!emailIsValid(email)) {
             setEmailError('Email inválido');
             alertify.error("E-mail ou senha inválido.",
               { id: 'alertify-notifier' });
-
         }
       
         if (password.length < 8) {
@@ -66,16 +60,13 @@ export default function Login() {
         } catch (error) {
             if (error.code === 'auth/user-not-found') {
                 setEmailNotFound('Email não cadastrado!');
-                
             } else {
                 alertify.error("Erro ao fazer login:", error, { id: 'alertify-notifier' });
             }
         }
-
     };
 
     const emailIsValid = (value) => {
-        // Regex para validar o formato do email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(value);
     };
@@ -100,8 +91,7 @@ export default function Login() {
                             style={{
                                 width: '300px',
                                 border: emailError ? '1px solid red' : '1px solid #ced4da'
-                              }}
-                        />
+                              }}/>
                         <label style={{ fontWeight: 'bold'}}>E-mail</label>
                         </span>
                         {emailError && <p style={{ marginTop: '5px', fontSize: '12px', color: 'red', fontWeight: 'bold' }}>{emailError}</p>}
@@ -115,9 +105,9 @@ export default function Login() {
                             onChange={handleChange}
                             style={{
                                 width: '300px',
-                                border: passwordError ? '1px solid red' : '1px solid #ced4da'
-                              }}
-                        />
+                                border: passwordError ? 
+                                            '1px solid red' : '1px solid #ced4da'
+                              }}/>
                         <label style={{ fontWeight: 'bold'}}>Password</label>
                         </span>
                         {passwordError && <p style={{ marginTop: '5px', fontSize: '12px', color: 'red', fontWeight: 'bold' }}>{passwordError}</p>}
@@ -126,8 +116,7 @@ export default function Login() {
                         background: 'linear-gradient(45deg, rgb(92, 15,221), rgb(105, 28, 237))',
                         width: '100%',
                         maxWidth: '300px',
-                        marginTop: '10px'
-                    }}>
+                        marginTop: '10px'}}>
                         <span style={{ margin: 'auto' }}><span style={{ fontWeight: 'bold'}}>Login</span></span>
                     </Button>
                     {emailNotFound && <p style={{ marginLeft: '80px', marginTop: '20px', fontSize: '14px', color: 'red', fontWeight: 'bold' }}>{emailNotFound}</p>}

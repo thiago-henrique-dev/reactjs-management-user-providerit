@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { auth, db } from '../services/Firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Navigate } from 'react-router-dom';
-import "alertifyjs/build/css/alertify.min.css";
 import { collection, getDocs } from 'firebase/firestore';
+import "alertifyjs/build/css/alertify.min.css";
 
 export default function Private({ children }) {
   const [loading, setLoading] = useState(true);
