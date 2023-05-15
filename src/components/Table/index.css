@@ -1,0 +1,19 @@
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 800px;
+}
+
+.p-datatable {
+  max-width: 1000px; 
+  width: 100%;
+}
+
+.p-datatable th,
+.p-datatable td {
+  width: 20%;
+}
+
+
+

@@ -1,0 +1,8 @@
+.alertify-notifier {
+    position: fixed;
+    top: 50%;
+    left: 96%;
+    transform: translate(-60%, -60%);
+  }
+
+  
