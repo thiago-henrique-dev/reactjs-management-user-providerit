@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { auth } from '../../services/Firebase'
-import alertify from "alertifyjs";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import alertify from "alertifyjs";
 import logo from '../../assets/logo.svg'
 import './index.css'
 
@@ -86,7 +86,6 @@ export default function Register() {
             setEmailError(true);
             alertify.error("Digite um e-mail válido.", { id: 'alertify-notifier' });
           }
-      
           return;
         }
       
@@ -100,31 +99,23 @@ export default function Register() {
         }
       }
       
-      
-
-
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
                 <div style={{ marginBottom: '70px' }}>
                     <img style={{
                         background: 'linear-gradient(45deg, rgb(92, 15,221), rgb(105, 28, 237))', marginLeft: '50px',
-                        padding: '20px'
-                    }}
+                        padding: '20px'}}
                         src={logo}
-                        alt="Logo"
-                    />
-                    <h1
-                        style={{
+                        alt="Logo"/>
+                    <h1 style={{
                             marginTop: '20px',
                             marginBottom: '25px',
                             padding: '12px 12px',
                             color: 'white',
                             background: 'linear-gradient(45deg, rgb(92, 15,221), rgb(105, 28, 237))',
                             fontSize: '16px',
-                            fontWeight: 'bold'
-                        }}
-                    >
+                            fontWeight: 'bold'}}>
                         Portal de Administração de Usuários
                     </h1>
                     <div style={{ marginBottom: '25px' }}>
@@ -137,16 +128,15 @@ export default function Register() {
                                 onFocus={() => handleFocus('email')}
                                 style={{
                                     width: '300px',
-                                    border: emailError || (formSubmitted && !email) ? '1px solid red' : '1px solid #ced4da'
-                                }}
-                            />
+                                    border: emailError || 
+                                                (formSubmitted && !email) ? 
+                                                            '1px solid red' : '1px solid #ced4da'}}/>
                             <label style={{ fontWeight: 'bold' }}>E-mail</label>
                         </span>
                         {formSubmitted && !email && (
                             <p style={{ marginTop: '5px', fontSize: '12px', color: 'red', fontWeight: 'bold' }}>
                                 Digite um e-mail válido.
-                            </p>
-                        )}
+                            </p>)}
                     </div>
                     <div style={{ marginTop: '25px' }}>
                         <span className="p-float-label">
@@ -156,18 +146,16 @@ export default function Register() {
                                 value={password}
                                 onChange={handleChange}
                                 onFocus={() => handleFocus('password')}
-                                style={{
-                                    width: '300px',
-                                    border: passwordError || (formSubmitted && !password) ? '1px solid red' : '1px solid #ced4da'
-                                }}
-                            />
+                                style={{ width: '300px',
+                                    border: passwordError || 
+                                                (formSubmitted && 
+                                                    !password) ? '1px solid red' : '1px solid #ced4da'}}/>
                             <label style={{ fontWeight: 'bold' }}>Password</label>
                         </span>
                         {formSubmitted && !password && (
                             <p style={{ marginTop: '5px', fontSize: '12px', color: 'red', fontWeight: 'bold' }}>
                                 {errorMessages.password}
-                            </p>
-                        )}
+                            </p>)}
                     </div>
                     <div style={{ marginTop: '25px' }}>
                         <span className="p-float-label">
@@ -179,16 +167,16 @@ export default function Register() {
                                 onFocus={() => handleFocus('passwordConfirmation')}
                                 style={{
                                     width: '300px',
-                                    border: confirmationError || (formSubmitted && !passwordConfirmation) ? '1px solid red' : '1px solid #ced4da'
-                                }}
-                            />
+                                    border: confirmationError || 
+                                                (formSubmitted && 
+                                                    !passwordConfirmation) ? 
+                                                        '1px solid red' : '1px solid #ced4da'}}/>
                             <label style={{ fontWeight: 'bold' }}>Confirm password</label>
                         </span>
                         {formSubmitted && !passwordConfirmation && (
                             <p style={{ marginTop: '5px', fontSize: '12px', color: 'red', fontWeight: 'bold' }}>
                                 {errorMessages.passwordConfirmation}
-                            </p>
-                        )}
+                            </p>)}
                     </div>
                     <Button
                         onClick={handleRegister}
@@ -196,16 +184,13 @@ export default function Register() {
                             background: 'linear-gradient(45deg, rgb(92, 15,221), rgb(105, 28, 237))',
                             width: '100%',
                             maxWidth: '300px',
-                            marginTop: '10px'
-                        }}
-                    >
+                            marginTop: '10px' }}>
                         <span style={{ margin: 'auto', fontWeight: 'bold' }}>Cadastrar</span>
                     </Button>
                     {emailNotFound && (
                         <p style={{ marginLeft: '80px', marginTop: '20px', fontSize: '14px', color: 'red', fontWeight: 'bold' }}>
                             {emailNotFound}
-                        </p>
-                    )}
+                        </p>)}
                     <div style={{ marginTop: '20px' }}>
                         <Link style={{ fontWeight: 'bold', textDecoration: 'none', marginLeft: '80px' }}
                             to="/">

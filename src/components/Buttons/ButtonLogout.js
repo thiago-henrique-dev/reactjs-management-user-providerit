@@ -5,7 +5,7 @@ import { Toast } from 'primereact/toast';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../services/Firebase'
 
-export default function ConfirmLogout(props) {
+export default function ConfirmLogout() {
   const [visible, setVisible] = useState(false);
   const toast = useRef(null);
   const buttonEl = useRef(null);

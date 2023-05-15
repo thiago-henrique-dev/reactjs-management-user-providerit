@@ -367,7 +367,7 @@ export default function CustomerDialog(props) {
                                         </span>
                                     </div>)}
                             </div>
-                            {formSubmitted && form.otherGender === '' 
+                            {formSubmitted && form.gender === '' 
                                         && !formFocused.otherGender && (
                                 <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.gender}
