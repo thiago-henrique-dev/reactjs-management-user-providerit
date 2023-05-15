@@ -70,7 +70,6 @@ export default function CustomerDialog(props) {
         }));
     };
 
-
     function handleChange(e) {
         const { name, value } = e.target;
 
@@ -257,11 +256,10 @@ export default function CustomerDialog(props) {
                                 onBlur={() => handleFieldBlur('name')}/>
                             <label style={{ fontWeight: 'bold'}}>Nome</label>
                           </span>
-                          { formSubmitted && form.name === '' && !formFocused.name && (
+                          {formSubmitted && form.name === '' && !formFocused.name && (
                                 <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.name}
-                                </div>
-                            )}
+                                </div>)}
                         </div>
                         <div className="form__group">
                         <span className="p-float-label">
@@ -283,8 +281,7 @@ export default function CustomerDialog(props) {
                             { formSubmitted && form.phone === '' && !formFocused.phone && (
                                 <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.phone}
-                                </div>
-                            )}
+                                </div>)}
                             {!formFocused.phone && !isPhoneValid && (
                                 <div style={{ fontSize: '10px', color: 'red', 
                                                 fontWeight: 'bold', marginTop: '5px' }}>
@@ -307,8 +304,7 @@ export default function CustomerDialog(props) {
                                 onBlur={() => handleFieldBlur('cpf')}/>
                              <label style={{ fontWeight: 'bold'}}>CPF</label>
                             </span>
-                            
-                            { formSubmitted && form.cpf === '' && !formFocused.cpf && (
+                            {formSubmitted && form.cpf === '' && !formFocused.cpf && (
                                 <div style={{ marginLeft: '15px', fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.cpf}
                                 </div>
@@ -318,8 +314,7 @@ export default function CustomerDialog(props) {
                                     {!isCPFValid && (
                                         <span style={{ fontSize: '11px', color: 'red', fontWeight: 'bold' }}>
                                             CPF inválido.
-                                        </span>
-                                    )}
+                                        </span>)}
                                     {isCPFValid && (
                                         <span style={{ marginLeft: '15px', fontSize: '11px', color: 'green', fontWeight: 'bold' }}>
                                             CPF válido.
@@ -372,8 +367,8 @@ export default function CustomerDialog(props) {
                                         </span>
                                     </div>)}
                             </div>
-                            {formSubmitted && form.gender === '' 
-                                        && !formFocused.gender && (
+                            {formSubmitted && form.otherGender === '' 
+                                        && !formFocused.otherGender && (
                                 <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.gender}
                                 </div>)}
@@ -393,7 +388,7 @@ export default function CustomerDialog(props) {
                                 onChange={handleChange}
                                 onFocus={() => handleFieldFocus('birthdate')}
                                 onBlur={() => handleFieldBlur('birthdate')}/>
-                            { formSubmitted && form.birthdate === '' 
+                                {formSubmitted && form.birthdate === '' 
                                         && !formFocused.birthdate && (
                                 <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.birthdate}
@@ -424,10 +419,8 @@ export default function CustomerDialog(props) {
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.cep}
                                         </div>)}
-                                </div>
+                                 </div>
                                 <div>
-
-
                                 <Button
                                     type="button"
                                     className="pi pi-search"
@@ -438,19 +431,16 @@ export default function CustomerDialog(props) {
                                         width: '50px',
                                         height: '35px',
                                         fontWeight: 'bold',
-                                        marginTop: '5px'
-                                    }} />
-                                 {showCEPError && !isCEPValid && (
+                                        marginTop: '5px'}}/>
+                                 {showCEPError && 
+                                        !isCEPValid && (
                                     <div style={{ marginTop: '5px', fontSize: '11px', color: 'red', fontWeight: 'bold' }}>
                                         CEP inválido ou não foi encotrado!
-                                    </div>
-                                )}
-
+                                    </div>)}
                                 {!showCEPError && isCEPValid && (
                                     <div style={{ marginTop: '5px', fontSize: '11px', color: 'green', fontWeight: 'bold' }}>
                                         CEP Encontrado.
-                                    </div>
-                                )}
+                                    </div>)}
                                 </div>
                             </div>
                         </div>
@@ -470,9 +460,8 @@ export default function CustomerDialog(props) {
                                                 marginRight: '5px',
                                                 border: 
                                                     formSubmitted &&
-                                                    form.street === ''
-                                                    ? '1px solid red' : '1px solid #ccc'
-                                            }} />
+                                                         form.street === '' ? 
+                                                                '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }} >Rua</label>
                                     </span>
                                     {formSubmitted &&
@@ -496,12 +485,11 @@ export default function CustomerDialog(props) {
                                             style={{ width: '110px',
                                                 marginRight: '5px',
                                                 border: formSubmitted &&
-                                                    form.number === '' ?
-                                                    '1px solid red' : '1px solid #ccc'
-                                            }} />
+                                                            form.number === '' ?
+                                                    '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }} >Número</label>
                                     </span>
-                                    { formSubmitted &&
+                                    {formSubmitted &&
                                         form.number === '' &&
                                         !formFocused.number && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
@@ -524,11 +512,10 @@ export default function CustomerDialog(props) {
                                                 marginRight: '5px',
                                                 border: formSubmitted &&
                                                     form.neighborhood === '' ?
-                                                    '1px solid red' : '1px solid #ccc'
-                                            }} />
+                                                    '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }} >Bairro</label>
                                     </span>
-                                    { formSubmitted &&
+                                    {formSubmitted &&
                                         form.neighborhood === '' &&
                                         !formFocused.neighborhood && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
@@ -551,16 +538,13 @@ export default function CustomerDialog(props) {
                                             onFocus={() => handleFieldFocus('city')}
                                             onBlur={() => handleFieldBlur('city')}
                                             style={{ width: '120px', 
-                                                border: formSubmitted && form.city === '' ? '1px solid red' : '1px solid #ccc',
-                                            }}
-                                        />
+                                                border: formSubmitted && form.city === '' ? '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }}>Cidade</label>
                                     </span>
-                                    { formSubmitted && form.city === '' && !formFocused.city && (
+                                    {formSubmitted && form.city === '' && !formFocused.city && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.city}
-                                        </div>
-                                    )}
+                                        </div>)}
                                 </div>
                                 <div style={{ marginRight: '10px' }}>
                                     <span className="p-float-label">
@@ -575,16 +559,15 @@ export default function CustomerDialog(props) {
                                             onBlur={() => handleFieldBlur('state')}
                                             style={{
                                                 width: '120px',
-                                                border: formSubmitted && form.state === '' ? '1px solid red' : '1px solid #ccc',
-                                            }}
-                                        />
+                                                border: formSubmitted && 
+                                                            form.state === '' ? 
+                                                                '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }}>Estado</label>
                                     </span>
-                                    { formSubmitted && form.state === '' && !formFocused.state && (
+                                    {formSubmitted && form.state === '' && !formFocused.state && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.state}
-                                        </div>
-                                    )}
+                                        </div>)}
                                 </div>
                                 <div>
                                     <span className="p-float-label">
@@ -598,20 +581,18 @@ export default function CustomerDialog(props) {
                                             onBlur={() => handleFieldBlur('complement')}
                                             style={{
                                                 width: '380px',
-                                                border:formSubmitted && form.complement === '' ? '1px solid red' : '1px solid #ccc',
-                                            }}
-                                        />
+                                                border:formSubmitted && 
+                                                    form.complement === '' ? 
+                                                        '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }}>Complemento</label>
                                     </span>
-                                    { formSubmitted && form.complement === '' && !formFocused.complement && (
+                                    {formSubmitted && form.complement === '' && !formFocused.complement && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.complement}
-                                        </div>
-                                    )}
+                                        </div>)}
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <Button type="submit"
