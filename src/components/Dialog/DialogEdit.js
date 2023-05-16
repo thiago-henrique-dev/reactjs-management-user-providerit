@@ -265,7 +265,7 @@ export default function CustomerDialogEdit(props) {
                                     <label style={{ fontWeight: 'bold' }}>Nome</label>
                                 </span>
                                 {isErrorMessagesVisible && formSubmitted && form.name === '' && !formFocused.name && (
-                                    <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
+                                    <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                         {errorMessages.name}
                                     </div>)}
                             </div>
@@ -290,7 +290,9 @@ export default function CustomerDialogEdit(props) {
                                     onBlur={() => handleFieldBlur('phone')} />
                                 <label style={{ fontWeight: 'bold' }}>Telefone</label>
                             </span>
-                            {isErrorMessagesVisible && !formFocused.phone && !isPhoneValid && (
+                            {isErrorMessagesVisible && 
+                                    !formFocused.phone && 
+                                            !isPhoneValid && (
                                 <div style={{ fontSize: '10px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     Número de telefone inválido
                                 </div>)}
@@ -324,7 +326,8 @@ export default function CustomerDialogEdit(props) {
                                             CPF inválido.
                                         </span>)}
                                     {isCPFValid && (
-                                        <span >
+                                        <span style={{ }}>
+                                    
                                             CPF válido.
                                         </span>)}
                                 </div>)}
@@ -375,31 +378,38 @@ export default function CustomerDialogEdit(props) {
                                         </span>
                                     </div>)}
                             </div>
-                            {isErrorMessagesVisible && formSubmitted && form.gender === '' && !formFocused.gender && (
-                                <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
+                            {isErrorMessagesVisible && 
+                                            formSubmitted && 
+                                                form.gender === '' 
+                                                    && !formFocused.gender && (
+                                <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.gender}
                                 </div>)}
                         </div>
                         <div>
-                            <h1 className='form__address'>Data de nascimento</h1>
+                            <span className="p-float-label">
+
                             <InputText
                                 id="birthdate"
                                 name="birthdate"
                                 style={{
                                     marginLeft: '5px', marginRight: '5px',
                                     border: fieldError &&
-                                        formSubmitted &&
-                                        form.birthdate === '' ?
-                                        '1px solid red' : '1px solid #ccc'
-                                }}
+                                              formSubmitted &&
+                                                   form.birthdate === '' ?
+                                                      '1px solid red' : '1px solid #ccc'}}
                                 type="date"
                                 defaultValue={form.birthdate}
                                 onChange={handleChange}
                                 onFocus={() => handleFieldFocus('birthdate')}
                                 onBlur={() => handleFieldBlur('birthdate')} />
+                                <label style={{ fontWeight: 'bold' }}>Data de nascimento</label>
+                                                                    </span>
+
                             {isErrorMessagesVisible &&
-                                formSubmitted && form.birthdate === ''
-                                && !formFocused.birthdate && (
+                                             formSubmitted && 
+                                                  form.birthdate === ''
+                                                        && !formFocused.birthdate && (
                                     <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                         {errorMessages.birthdate}
                                     </div>)}
@@ -423,16 +433,16 @@ export default function CustomerDialogEdit(props) {
                                                 marginBottom: '10px',
                                                 width: '150px', marginRight: '5px',
                                                 border: fieldError &&
-                                                    formSubmitted &&
-                                                    form.cep === '' ?
-                                                    '1px solid red' : '1px solid #ccc'
+                                                           formSubmitted &&
+                                                                   form.cep === '' ?
+                                                                         '1px solid red' : '1px solid #ccc'
                                             }} />
                                         <label style={{ fontWeight: 'bold' }}>CEP</label>
                                     </span>
                                     {isErrorMessagesVisible &&
-                                        formSubmitted &&
-                                        form.cep === '' &&
-                                        !formFocused.cep && (
+                                                     formSubmitted &&
+                                                       form.cep === '' &&
+                                                             !formFocused.cep && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                                 {errorMessages.cep}
                                             </div>)}
@@ -452,7 +462,9 @@ export default function CustomerDialogEdit(props) {
                                     }} />
                                 {showCEPError && (
                                     <div style={{ fontSize: '11px', fontWeight: 'bold', marginTop: '5px' }}>
-                                        {!isCEPValid ? 'CEP inválido ou não foi encontrado!' : 'CEP Encontrado.'}
+                                        {!isCEPValid ?
+                                             'CEP inválido ou não foi encontrado!' :
+                                                     'CEP Encontrado.'}
                                     </div>)}
                             </div>
                         </div>
@@ -471,9 +483,9 @@ export default function CustomerDialogEdit(props) {
                                             style={{ width: '350px',
                                                 marginRight: '5px',
                                                 border: fieldError &&
-                                                    formSubmitted &&
-                                                    form.street === ''
-                                                    ? '1px solid red' : '1px solid #ccc'}}/>
+                                                          formSubmitted &&
+                                                             form.street === '' ?
+                                                                 '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }} >Rua</label>
                                     </span>
                                     {isErrorMessagesVisible &&
@@ -498,15 +510,15 @@ export default function CustomerDialogEdit(props) {
                                             style={{ width: '80px',
                                                 marginRight: '5px',
                                                 border: fieldError &&
-                                                    formSubmitted &&
-                                                    form.number === '' ?
+                                                          formSubmitted &&
+                                                             form.number === '' ?
                                                     '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }}>Número</label>
                                     </span>
                                     {isErrorMessagesVisible &&
-                                        formSubmitted &&
-                                        form.number === '' &&
-                                        !formFocused.number && (
+                                                    formSubmitted &&
+                                                      form.number === '' &&
+                                                        !formFocused.number && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                                 {errorMessages.number}
                                             </div>)}
@@ -526,15 +538,15 @@ export default function CustomerDialogEdit(props) {
                                                 width: '150px',
                                                 marginRight: '5px',
                                                 border: fieldError &&
-                                                    formSubmitted &&
-                                                    form.neighborhood === '' ?
+                                                          formSubmitted &&
+                                                             form.neighborhood === '' ?
                                                     '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }} >Bairro</label>
                                     </span>
                                     {isErrorMessagesVisible &&
-                                        formSubmitted &&
-                                        form.neighborhood === '' &&
-                                        !formFocused.neighborhood && (
+                                                     formSubmitted &&
+                                                form.neighborhood === '' &&
+                                                    !formFocused.neighborhood && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                                 {errorMessages.neighborhood}
                                             </div>)}

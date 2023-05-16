@@ -1,7 +1,7 @@
 export function formatDatePTBR(dateString) {
   const [year, month, day] = dateString.split('-');
-  const formattedDate = `${month.padStart(2, '0')}/${day.padStart(2, '0')}/${year}`;
-  return formattedDate; 
+  const formattedDate = `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+  return formattedDate;
 }
 
 export function formatDateDialogEdit(data) {
@@ -10,7 +10,7 @@ export function formatDateDialogEdit(data) {
   const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
   const ano = String(dataObj.getFullYear());
 
-  return `${ano}-${mes}-${dia}`;
+  return `${ano}-${dia}-${mes}`;
 }
 
 export function formatPhone(phone) {

@@ -378,7 +378,8 @@ export default function CustomerDialog(props) {
                                 </div>)}
                             </div>
                         <div>
-                            <h1 className='form__address'>Data de nascimento</h1>
+                            <h1 style={{ fontSize: '14px', color: "grey", fontWeight: 'bold' }}>Data de nascimento</h1>
+                            
                             <InputText
                                 id="birthdate"
                                 name="birthdate"
@@ -400,7 +401,7 @@ export default function CustomerDialog(props) {
                         </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h1 className='form__address' style={{ fontSize: '14px', marginRight: '250px'}}>Endereço</h1>
+                        <h1 className='form__address' style={{ fontSize: '14px', marginLeft: '50px'}}>Endereço</h1>
                         <div className="form__group">
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
