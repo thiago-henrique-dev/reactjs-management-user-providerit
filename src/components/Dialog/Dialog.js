@@ -155,13 +155,19 @@ export default function CustomerDialog(props) {
     async function registerCustomer(e) {
         e.preventDefault();
         setFormSubmitted(true);
-
+    
         const isValidCPF = validateCPF(form.cpf);
         if (!isValidCPF) {
             setIsCPFValid(false);
             return;
         }
-
+    
+        if ( !form.cep ||!form.street || !form.number || !form.neighborhood ||!form.city || !form.state ||
+             !form.complement || !form.name || !form.phone || !form.gender || !form.birthdate
+        ) {
+            return;
+        }
+    
         try {
             const formattedBirthdate = formatDatePTBR(form.birthdate);
             const customerInfo = {
@@ -181,18 +187,16 @@ export default function CustomerDialog(props) {
                 state: form.state,
                 complement: form.complement,
             };
-
-            if (!form.cep || !form.street || !form.number || !form.neighborhood || !form.city || !form.state || !form.complement) {
-                return;
-            }
+    
             await addDoc(collection(db, 'users'), customerInfo);
             alertify.success("Usuário cadastrado com sucesso!", { id: 'alertify-notifier' });
-            resetForm()
+            resetForm();
         } catch (error) {
             console.error('Campos em branco:', error);
             alertify.error("Erro ao cadastrar usuário:", error, { id: 'alertify-notifier' });
         }
     }
+    
 
     const handleSearch = async () => {
         if (form.cep.length !== 9) {
