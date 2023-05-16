@@ -10,7 +10,7 @@ export default function Admin() {
   return (
     <>
     <p style={{ fontSize: '22px', marginLeft: '200px', fontWeight: 'bold' }}>
-      Olá <span style={{ color: 'blue' }}>{nome}</span>! Seja-bem vindo!
+      Olá <span style={{ color: 'blue' }}>{nome}</span>! Seja bem-vindo!
     </p>   
       <Table />
     </>

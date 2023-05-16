@@ -81,7 +81,7 @@ export default function Table() {
     if (customer) {
       const formattedBirthdate = formatDateDialogEdit(customer.birthdate);
       const [ano, mes, dia] = formattedBirthdate.split('-');
-      const birthdateFormatted = `${ano}-${mes}-${dia}`;
+      const birthdateFormatted = `${ano}-${dia}-${mes}`;
   
       setForm({
         id: customer.id,
