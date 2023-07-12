@@ -1,48 +1,24 @@
-import { useState } from 'react'
-import { db } from '../../services/Firebase'
-import { addDoc, collection } from 'firebase/firestore'
+
+import { useState, useEffect } from 'react'
 import { InputText } from 'primereact/inputtext'
 import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
-import { RadioButton } from 'primereact/radiobutton'
 import axios from 'axios';
+import api from '../../../services/apiURL'
+import { RadioButton } from 'primereact/radiobutton'
+import './DialogEdit.css'
 import alertify from "alertifyjs";
-import { formatPhone, 
-    formatCPF, 
-    validateCPF, 
-    formatDatePTBR, 
-    formatCEP, 
-    errorMessages } from './DialogValidator';
-import "alertifyjs/build/css/alertify.min.css";
-import './index.css'
+import { formatPhone, formatCPF, validateCPF, formatCEP, errorMessages, formatDatePTBR } from '../Validation/DialogValidator';
 
-export default function CustomerDialog(props) {
-    const storedData = JSON.parse(localStorage.getItem("detailUser"));
-    const [form, setForm] = useState({
-        userAdmin: '',
-        emailAdmin: '',
-        name: '',
-        phone: '',
-        cpf: '',
-        gender: '',
-        otherGender: '',
-        birthdate: '',
-        cep: '',
-        street: '',
-        number: '',
-        neighborhood: '',
-        city: '',
-        state: '',
-        complement: '',
-    });
-
+export default function CustomerDialogEdit(props) {
+    const { form, setForm } = props;
     const [formFocused, setFormFocused] = useState({
         name: false,
         phone: false,
         cpf: false,
         gender: false,
-        birthdate: false,
         otherGender: false,
+        birthdate: false,
         cep: false,
         street: false,
         number: false,
@@ -51,14 +27,15 @@ export default function CustomerDialog(props) {
         state: false,
         complement: false,
     });
-
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isPhoneValid, setIsPhoneValid] = useState(true);
     const [isCPFValid, setIsCPFValid] = useState(true);
     const [isCEPValid, setIsCEPValid] = useState(false);
     const [showCEPError, setShowCEPError] = useState(false);
     const [showOtherInput, setShowOtherInput] = useState(false);
-
+    const [fieldError, setFieldError] = useState(false);
+    const [isErrorMessagesVisible, setIsErrorMessagesVisible] = useState(false);
+     
     const handleFieldFocus = (fieldName) => {
         setFormFocused({ ...formFocused, [fieldName]: true });
     };
@@ -68,18 +45,24 @@ export default function CustomerDialog(props) {
             ...prevFormFocused,
             [fieldName]: false,
         }));
+
+        if (form[fieldName] === '') {
+            setFieldError(true);
+        } else {
+            setFieldError(false);
+        }
     };
 
     function handleChange(e) {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
 
-        if (name === 'gender') {
+        if (type === 'radio' && name === 'gender') {
             if (value === 'Outro') {
                 setShowOtherInput(true);
                 setForm((oldValues) => ({
                     ...oldValues,
                     gender: value,
-                    otherGender: oldValues.otherGender || '', 
+                    otherGender: oldValues.otherGender || '',
                 }));
             } else {
                 setShowOtherInput(false);
@@ -122,6 +105,19 @@ export default function CustomerDialog(props) {
         }
     }
 
+    useEffect(() => {
+        if (form.gender === 'Outro') {
+            setShowOtherInput(true);
+            setForm((oldValues) => ({
+                ...oldValues,
+                otherGender: form.otherGender || '',
+            }));
+        } else {
+            setShowOtherInput(false);
+        }
+    }, []);
+
+
     const resetForm = () => {
         setForm({
             name: '',
@@ -138,11 +134,6 @@ export default function CustomerDialog(props) {
             state: '',
             complement: '',
         });
-        setFormFocused({
-            name: false,
-            email: false,
-            message: false,
-        });
         props.onHide()
         setFormSubmitted(false);
         setIsPhoneValid(true)
@@ -152,51 +143,55 @@ export default function CustomerDialog(props) {
         setShowOtherInput(false)
     };
 
-    async function registerCustomer(e) {
+    async function handleUpdateCustomer(e) {
         e.preventDefault();
         setFormSubmitted(true);
-    
+
+        const requiredFields = [
+            { name: 'name', label: 'Nome' },
+            { name: 'phone', label: 'Telefone' },
+            { name: 'cpf', label: 'CPF' },
+            { name: 'birthdate', label: 'Data de Nascimento' },
+            { name: 'cep', label: 'CEP' },
+            { name: 'street', label: 'Rua' },
+            { name: 'number', label: 'Número' },
+            { name: 'neighborhood', label: 'Bairro' },
+            { name: 'city', label: 'Cidade' },
+            { name: 'state', label: 'Estado' },
+            { name: 'complement', label: 'Complemento' },
+        ];
+
+        let errorMessages = {};
+        requiredFields.forEach(field => {
+            if (form[field.name].trim() === '') {
+                errorMessages[field.name] = `O campo ${field.label} é obrigatório.`;
+            }
+        });
+
+        if (Object.keys(errorMessages).length > 0) {
+            setIsErrorMessagesVisible(true);
+            return;
+        }
+
         const isValidCPF = validateCPF(form.cpf);
         if (!isValidCPF) {
             setIsCPFValid(false);
+            alertify.error("Por favor, verifique o número do CPF digitado!", { id: 'alertify-notifier' });
             return;
         }
-    
-        if ( !form.cep ||!form.street || !form.number || !form.neighborhood ||!form.city || !form.state ||
-             !form.complement || !form.name || !form.phone || !form.gender || !form.birthdate
-        ) {
-            return;
-        }
-    
+
         try {
-            const formattedBirthdate = formatDatePTBR(form.birthdate);
-            const customerInfo = {
-                userAdmin: storedData.name,
-                emailAdmin: storedData.email,
-                name: form.name,
-                phone: form.phone,
-                cpf: form.cpf,
-                gender: form.gender,
-                otherGender: form.otherGender,
-                birthdate: formattedBirthdate,
-                cep: form.cep,
-                street: form.street,
-                number: form.number,
-                neighborhood: form.neighborhood,
-                city: form.city,
-                state: form.state,
-                complement: form.complement,
-            };
-    
-            await addDoc(collection(db, 'users'), customerInfo);
-            alertify.success("Usuário cadastrado com sucesso!", { id: 'alertify-notifier' });
+            const formattedDate = formatDatePTBR(form.birthdate);
+            form.birthdate = formattedDate;
+            await api.put(`/clientes/${form.id}`, form);
+            console.log(form.id)
+            alertify.success("Usuário atualizado com sucesso!", { id: 'alertify-notifier' });
             resetForm();
+            props.fetchUsers();
         } catch (error) {
-            console.error('Campos em branco:', error);
-            alertify.error("Erro ao cadastrar usuário:", error, { id: 'alertify-notifier' });
+            alertify.error("Erro ao atualizar o usuário!", { id: 'alertify-notifier' });
         }
     }
-    
 
     const handleSearch = async () => {
         if (form.cep.length !== 9) {
@@ -204,6 +199,7 @@ export default function CustomerDialog(props) {
             setShowCEPError(true);
             return;
         }
+
         try {
             const response = await axios.get(`https://viacep.com.br/ws/${form.cep}/json/`);
 
@@ -223,7 +219,7 @@ export default function CustomerDialog(props) {
             setShowCEPError(false);
         } catch (error) {
             console.error(error);
-            setForm({
+            setForm({ 
                 ...form,
                 street: '',
                 neighborhood: '',
@@ -237,99 +233,105 @@ export default function CustomerDialog(props) {
 
     return (
         <Dialog visible={props.visible} onHide={resetForm}>
-            <form onSubmit={registerCustomer}  style={{ overflow: 'hidden'}}
+            <form onSubmit={handleUpdateCustomer} noValidate style={{overflow: 'hidden'}}
                 className="form__registration">
-                <h1 className='form__title'>Ficha Cadastral do Cliente</h1>
-                <h1 className='form__address' style={{ marginRight: '450px'}}>Dados do cliente</h1>
-
-                <div className="input-group">
-                    <div style={{ display: 'flex' }}>
-                        <div>
-                        <span className="p-float-label">
-                            <InputText
-                                id="inputText"
-                                name="name"
-                                style={{ width: '240px',
-                                    marginRight: '5px',
-                                    border: formSubmitted && 
-                                                        form.name === '' ? 
-                                                        '1px solid red' : '1px solid #ccc'}}
-                                value={form.name}
-                                onChange={handleChange}
-                                onFocus={() => handleFieldFocus('name')}
-                                onBlur={() => handleFieldBlur('name')}/>
-                            <label style={{ fontWeight: 'bold'}}>Nome</label>
-                          </span>
-                          {formSubmitted && form.name === '' && !formFocused.name && (
-                                <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
-                                    {errorMessages.name}
-                                </div>)}
-                        </div>
+                <h1 className="name__admin">Ficha cadastrada por <span style={{ color: 'blue'}}> {form.nameAdmin}</span>
+                    <p className='email__admin'>E-mail do usuário: {form.emailAdmin}</p>
+                </h1>
+                <div>
+                    <h1 className="heading__style">Dados do cliente</h1>
+                    <div className='flex__container'>
+                            <div>
+                                <span className="p-float-label">
+                                    <InputText
+                                        id="inputText"
+                                        name="name"
+                                        style={{
+                                            width: '300px',
+                                            marginRight: '5px',
+                                            border: fieldError && formSubmitted && form.name === '' ? '1px solid red' : '1px solid #ccc'
+                                        }}
+                                        value={form.name}
+                                        onChange={handleChange}
+                                        onFocus={() => handleFieldFocus('name')}
+                                        onBlur={() => handleFieldBlur('name')}
+                                    />
+                                    <label style={{ fontWeight: 'bold' }}>Nome</label>
+                                </span>
+                                {isErrorMessagesVisible && formSubmitted && form.name === '' && !formFocused.name && (
+                                    <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
+                                        {errorMessages.name}
+                                    </div>)}
+                            </div>
+                        
                         <div className="form__group">
-                        <span className="p-float-label">
-                            <InputText
-                                id="inputText"
-                                name="phone"
-                                style={{ width: '170px',
-                                    marginRight: '5px',
-                                    border: formSubmitted
-                                                    && form.phone === '' ? 
-                                                        '1px solid red' : '1px solid #ccc'}}
-                                value={form.phone}
-                                maxLength="15"
-                                onChange={handleChange}
-                                onFocus={() => handleFieldFocus('phone')}
-                                onBlur={() => handleFieldBlur('phone')}/>
-                                <label style={{ fontWeight: 'bold'}}>Telefone</label>
+                            <span className="p-float-label">
+                                <InputText
+                                    id="inputText"
+                                    name="phone"
+                                    style={{
+                                        width: '150px',
+                                        marginRight: '5px',
+                                        border: fieldError &&
+                                            formSubmitted &&
+                                            form.phone === '' ?
+                                            '1px solid red' : '1px solid #ccc'
+
+                                    }}
+                                    value={form.phone}
+                                    maxLength="15"
+                                    onChange={handleChange}
+                                    onFocus={() => handleFieldFocus('phone')}
+                                    onBlur={() => handleFieldBlur('phone')} />
+                                <label style={{ fontWeight: 'bold' }}>Telefone</label>
                             </span>
-                            { formSubmitted && form.phone === '' && !formFocused.phone && (
-                                <div style={{ fontSize: '11px', color: 'red', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
-                                    {errorMessages.phone}
-                                </div>)}
-                            {!formFocused.phone && !isPhoneValid && (
-                                <div style={{ fontSize: '10px', color: 'red', 
-                                                fontWeight: 'bold', marginTop: '5px' }}>
+                            {isErrorMessagesVisible && 
+                                    !formFocused.phone && 
+                                            !isPhoneValid && (
+                                <div style={{ fontSize: '10px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     Número de telefone inválido
                                 </div>)}
                         </div>
                         <div className="form__group">
-                         <span className="p-float-label">
-                            <InputText
-                                id="inputText"
-                                name="cpf"
-                                style={{ width: '210px',
-                                    marginRight: '5px',
-                                    border: formSubmitted && form.cpf === '' ? 
-                                                    '1px solid red' : '1px solid #ccc'}}
-                                value={form.cpf}
-                                maxLength="14"
-                                onChange={handleChange}
-                                onFocus={() => handleFieldFocus('cpf')}
-                                onBlur={() => handleFieldBlur('cpf')}/>
-                             <label style={{ fontWeight: 'bold'}}>CPF</label>
+                            <span className="p-float-label">
+                                <InputText
+                                    id="inputText"
+                                    name="cpf"
+                                    style={{
+                                        width: '130px',
+                                        marginRight: '5px',
+                                        border: fieldError &&
+                                            formSubmitted && form.cpf === '' ?
+                                            '1px solid red' : '1px solid #ccc'}}
+                                    value={form.cpf}
+                                    maxLength="14"
+                                    onChange={handleChange}
+                                    onFocus={() => handleFieldFocus('cpf')}
+                                    onBlur={() => handleFieldBlur('cpf')} />
+                                <label style={{ fontWeight: 'bold' }}>CPF</label>
                             </span>
-                            {formSubmitted && form.cpf === '' && !formFocused.cpf && (
-                                <div style={{ marginLeft: '15px', fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
+                            {isErrorMessagesVisible && formSubmitted && form.cpf === '' && !formFocused.cpf && (
+                                <div style={{ fontSize: '10px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                     {errorMessages.cpf}
-                                </div>
-                            )}
+                                </div>)}
                             {!formFocused.cpf && form.cpf.length > 0 && (
-                                <div style={{ fontSize: '11px', transition: 'color 0.2s ease-in-out', fontWeight: 'bold', marginTop: '5px' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 'bold', marginTop: '5px' }}>
                                     {!isCPFValid && (
-                                        <span style={{ fontSize: '11px', color: 'red', fontWeight: 'bold' }}>
+                                        <span style={{ fontSize: '10px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             CPF inválido.
                                         </span>)}
                                     {isCPFValid && (
-                                        <span style={{ marginLeft: '15px', fontSize: '11px', color: 'green', fontWeight: 'bold' }}>
+                                        <span style={{ }}>
+                                    
                                             CPF válido.
                                         </span>)}
                                 </div>)}
                         </div>
                     </div>
                     <div className="form__group" style={{ display: 'flex', alignItems: 'center' }}>
-                        <div className="flex-1">
-                            <h1 className='form__address'>Genero</h1>
-                            <div style={{ display: 'flex' }}>
+                        <div className="form_gender">
+                            <h1 className="title-gender">Genero</h1>
+                            <div className="radio__flex">
                                 <RadioButton
                                     inputId="gender1"
                                     name="gender"
@@ -337,8 +339,8 @@ export default function CustomerDialog(props) {
                                     onChange={handleChange}
                                     onBlur={() => handleFieldBlur('gender')}
                                     onFocus={() => handleFieldFocus('gender')}
-                                    checked={form.gender === 'Masculino'}                                />
-                                <label style={{ fontSize: '14px', fontWeight: 'bold', marginLeft: '10px', marginRight: '5px' }}>Masculino</label>
+                                    checked={form.gender === 'Masculino'} />
+                                <label className="label__gender">Masculino</label>
                                 <RadioButton
                                     inputId="gender2"
                                     name="gender"
@@ -346,8 +348,8 @@ export default function CustomerDialog(props) {
                                     onChange={handleChange}
                                     onBlur={() => handleFieldBlur('gender')}
                                     onFocus={() => handleFieldFocus('gender')}
-                                    checked={form.gender === 'Feminino'}/>
-                                <label style={{ fontSize: '14px', fontWeight: 'bold', marginLeft: '10px', marginRight: '5px' }}>Feminino</label>
+                                    checked={form.gender === 'Feminino'} />
+                                <label className="label__gender">Feminino</label>
                                 <RadioButton
                                     inputId="gender3"
                                     name="gender"
@@ -355,77 +357,93 @@ export default function CustomerDialog(props) {
                                     onChange={handleChange}
                                     onBlur={() => handleFieldBlur('gender')}
                                     onFocus={() => handleFieldFocus('gender')}
-                                    checked={form.otherGender === 'Outro'}/>
-                                <label htmlFor="gender3" style={{ fontSize: '14px', fontWeight: 'bold', marginLeft: '10px', marginRight: '10px' }}>Personalizado</label>
+                                    checked={form.otherGender === 'Outro'} />
+                                <label className="label__gender">Outros</label>
                                 {showOtherInput && (
                                     <div>
                                         <span className="p-float-label">
-                                        <InputText
-                                            type="text"
-                                            name="otherGender"
-                                            value={form.otherGender}
-                                            onChange={handleChange}
-                                            onBlur={handleFieldBlur}
-                                            style={{ width: '130px' }}/>
-                                        <label style={{ fontWeight: 'bold'}}>Gênero</label>
+                                            <InputText
+                                                type="text"
+                                                name="otherGender"
+                                                value={form.otherGender}
+                                                onChange={handleChange}
+                                                onBlur={handleFieldBlur}
+                                                style={{ width: '150px' }} />
+                                            <label style={{ fontWeight: 'bold' }}>Gênero</label>
                                         </span>
                                     </div>)}
                             </div>
-                            {formSubmitted && form.gender === '' 
-                                        && !formFocused.otherGender && (
-                                <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
+                            {isErrorMessagesVisible && 
+                                            formSubmitted && 
+                                                form.gender === '' 
+                                                    && !formFocused.gender && (
+                                <div className="error__message">
                                     {errorMessages.gender}
                                 </div>)}
-                            </div>
+                        </div>
                         <div>
-                            <h1 style={{ fontSize: '14px', color: "grey", fontWeight: 'bold' }}>Data de nascimento</h1>
-                            
+                            <span className="p-float-label">
+
                             <InputText
                                 id="birthdate"
                                 name="birthdate"
                                 style={{
+                                    marginTop: '28px',
+                                    width: '150px',
                                     marginLeft: '5px', marginRight: '5px',
-                                    border: formSubmitted && 
-                                                    form.birthdate === '' ?
-                                                         '1px solid red' : '1px solid #ccc'}}
+                                    border: fieldError &&
+                                              formSubmitted &&
+                                                   form.birthdate === '' ?
+                                                      '1px solid red' : '1px solid #ccc'}}
                                 type="date"
                                 defaultValue={form.birthdate}
                                 onChange={handleChange}
                                 onFocus={() => handleFieldFocus('birthdate')}
-                                onBlur={() => handleFieldBlur('birthdate')}/>
-                                {formSubmitted && form.birthdate === '' 
-                                        && !formFocused.birthdate && (
-                                <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
-                                    {errorMessages.birthdate}
-                                </div>)}
+                                onBlur={() => handleFieldBlur('birthdate')} />
+                                <label style={{ fontWeight: 'bold', marginTop: '20px' }}>Data de nascimento</label>
+                                                                    </span>
+
+                            {isErrorMessagesVisible &&
+                                             formSubmitted && 
+                                                  form.birthdate === ''
+                                                        && !formFocused.birthdate && (
+                                    <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
+                                        {errorMessages.birthdate}
+                                    </div>)}
                         </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h1 className='form__address' style={{ fontSize: '14px', marginLeft: '50px'}}>Endereço</h1>
+                        <h1 className="heading__style">Endereço</h1>
                         <div className="form__group">
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
-                                <span className="p-float-label">
-                                    <InputText
-                                        id="inputText"
-                                        name="cep"
-                                        type="text"
-                                        value={form.cep}
-                                        onChange={handleChange}
-                                        onFocus={() => handleFieldFocus('cep')}
-                                        onBlur={() => handleFieldBlur('cep')}
-                                        style={{
-                                            width: '150px', marginRight: '5px',
-                                            border: formSubmitted && form.cep === '' ? '1px solid red' : '1px solid #ccc',
-                                        }}/>
-                                    <label style={{ fontWeight: 'bold'}}>CEP</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', }}>
+                                    <span className="p-float-label">
+                                        <InputText
+                                            id="inputText"
+                                            name="cep"
+                                            type="text"
+                                            value={form.cep}
+                                            onChange={handleChange}
+                                            onFocus={() => handleFieldFocus('cep')}
+                                            onBlur={() => handleFieldBlur('cep')}
+                                            style={{
+                                                marginBottom: '10px',
+                                                width: '150px', marginRight: '5px',
+                                                border: fieldError &&
+                                                           formSubmitted &&
+                                                                   form.cep === '' ?
+                                                                         '1px solid red' : '1px solid #ccc'
+                                            }} />
+                                        <label style={{ fontWeight: 'bold' }}>CEP</label>
                                     </span>
-                                    {formSubmitted && form.cep === '' && !formFocused.cep && (
-                                        <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
-                                            {errorMessages.cep}
-                                        </div>)}
-                                 </div>
-                                <div>
+                                    {isErrorMessagesVisible &&
+                                                     formSubmitted &&
+                                                       form.cep === '' &&
+                                                             !formFocused.cep && (
+                                            <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
+                                                {errorMessages.cep}
+                                            </div>)}
+                                </div>
                                 <Button
                                     type="button"
                                     className="pi pi-search"
@@ -434,19 +452,17 @@ export default function CustomerDialog(props) {
                                         background: 'linear-gradient(45deg,#6610F2,#741FFF)',
                                         color: 'white',
                                         width: '50px',
-                                        height: '35px',
+                                        height: '30px',
                                         fontWeight: 'bold',
-                                        marginTop: '5px'}}/>
-                                 {showCEPError && 
-                                        !isCEPValid && (
-                                    <div style={{ marginTop: '5px', fontSize: '11px', color: 'red', fontWeight: 'bold' }}>
-                                        CEP inválido ou não foi encotrado!
+                                        marginRight: '30px',
+                                        marginBottom: '15px'
+                                    }} />
+                                {showCEPError && (
+                                    <div style={{ fontSize: '11px', fontWeight: 'bold', marginTop: '5px' }}>
+                                        {!isCEPValid ?
+                                             'CEP inválido ou não foi encontrado!' :
+                                                     'CEP Encontrado.'}
                                     </div>)}
-                                {!showCEPError && isCEPValid && (
-                                    <div style={{ marginTop: '5px', fontSize: '11px', color: 'green', fontWeight: 'bold' }}>
-                                        CEP Encontrado.
-                                    </div>)}
-                                </div>
                             </div>
                         </div>
                         <div className="form__group">
@@ -461,15 +477,16 @@ export default function CustomerDialog(props) {
                                             onChange={handleChange}
                                             onFocus={() => handleFieldFocus('street')}
                                             onBlur={() => handleFieldBlur('street')}
-                                            style={{ width: '320px',
+                                            style={{ width: '350px',
                                                 marginRight: '5px',
-                                                border: 
-                                                    formSubmitted &&
-                                                         form.street === '' ? 
-                                                                '1px solid red' : '1px solid #ccc'}} />
+                                                border: fieldError &&
+                                                          formSubmitted &&
+                                                             form.street === '' ?
+                                                                 '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }} >Rua</label>
                                     </span>
-                                    {formSubmitted &&
+                                    {isErrorMessagesVisible &&
+                                        formSubmitted &&
                                         form.street === '' &&
                                         !formFocused.street && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
@@ -487,16 +504,18 @@ export default function CustomerDialog(props) {
                                             onChange={handleChange}
                                             onFocus={() => handleFieldFocus('number')}
                                             onBlur={() => handleFieldBlur('number')}
-                                            style={{ width: '110px',
+                                            style={{ width: '80px',
                                                 marginRight: '5px',
-                                                border: formSubmitted &&
-                                                            form.number === '' ?
+                                                border: fieldError &&
+                                                          formSubmitted &&
+                                                             form.number === '' ?
                                                     '1px solid red' : '1px solid #ccc'}} />
-                                        <label style={{ fontWeight: 'bold' }} >Número</label>
+                                        <label style={{ fontWeight: 'bold' }}>Número</label>
                                     </span>
-                                    {formSubmitted &&
-                                        form.number === '' &&
-                                        !formFocused.number && (
+                                    {isErrorMessagesVisible &&
+                                                    formSubmitted &&
+                                                      form.number === '' &&
+                                                        !formFocused.number && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                                 {errorMessages.number}
                                             </div>)}
@@ -513,16 +532,18 @@ export default function CustomerDialog(props) {
                                             onFocus={() => handleFieldFocus('neighborhood')}
                                             onBlur={() => handleFieldBlur('neighborhood')}
                                             style={{
-                                                width: '190px',
+                                                width: '150px',
                                                 marginRight: '5px',
-                                                border: formSubmitted &&
-                                                    form.neighborhood === '' ?
+                                                border: fieldError &&
+                                                          formSubmitted &&
+                                                             form.neighborhood === '' ?
                                                     '1px solid red' : '1px solid #ccc'}} />
                                         <label style={{ fontWeight: 'bold' }} >Bairro</label>
                                     </span>
-                                    {formSubmitted &&
-                                        form.neighborhood === '' &&
-                                        !formFocused.neighborhood && (
+                                    {isErrorMessagesVisible &&
+                                                     formSubmitted &&
+                                                form.neighborhood === '' &&
+                                                    !formFocused.neighborhood && (
                                             <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                                 {errorMessages.neighborhood}
                                             </div>)}
@@ -542,14 +563,20 @@ export default function CustomerDialog(props) {
                                             onChange={handleChange}
                                             onFocus={() => handleFieldFocus('city')}
                                             onBlur={() => handleFieldBlur('city')}
-                                            style={{ width: '120px', 
-                                                border: formSubmitted && form.city === '' ? '1px solid red' : '1px solid #ccc'}}/>
+                                            style={{ width: '150px', 
+                                                border: fieldError &&
+                                                         formSubmitted && 
+                                                            form.city === '' ?
+                                                             '1px solid red' : '1px solid #ccc',
+                                            }}
+                                        />
                                         <label style={{ fontWeight: 'bold' }}>Cidade</label>
                                     </span>
-                                    {formSubmitted && form.city === '' && !formFocused.city && (
+                                    {isErrorMessagesVisible && formSubmitted && form.city === '' && !formFocused.city && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.city}
-                                        </div>)}
+                                        </div>
+                                    )}
                                 </div>
                                 <div style={{ marginRight: '10px' }}>
                                     <span className="p-float-label">
@@ -563,13 +590,13 @@ export default function CustomerDialog(props) {
                                             onFocus={() => handleFieldFocus('state')}
                                             onBlur={() => handleFieldBlur('state')}
                                             style={{
-                                                width: '120px',
-                                                border: formSubmitted && 
-                                                            form.state === '' ? 
-                                                                '1px solid red' : '1px solid #ccc'}}/>
+                                                width: '80px',
+                                                border: fieldError &&
+                                                          formSubmitted && 
+                                                            form.state === '' ? '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }}>Estado</label>
                                     </span>
-                                    {formSubmitted && form.state === '' && !formFocused.state && (
+                                    {isErrorMessagesVisible  && formSubmitted && form.state === '' && !formFocused.state && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.state}
                                         </div>)}
@@ -585,16 +612,18 @@ export default function CustomerDialog(props) {
                                             onFocus={() => handleFieldFocus('complement')}
                                             onBlur={() => handleFieldBlur('complement')}
                                             style={{
-                                                width: '380px',
-                                                border:formSubmitted && 
-                                                    form.complement === '' ? 
-                                                        '1px solid red' : '1px solid #ccc'}}/>
+                                                width: '350px',
+                                                border:
+                                                    fieldError && 
+                                                        formSubmitted && 
+                                                            form.complement === '' ? '1px solid red' : '1px solid #ccc'}}/>
                                         <label style={{ fontWeight: 'bold' }}>Complemento</label>
                                     </span>
-                                    {formSubmitted && form.complement === '' && !formFocused.complement && (
+                                    {isErrorMessagesVisible  && formSubmitted && form.complement === '' && !formFocused.complement && (
                                         <div style={{ fontSize: '11px', color: 'red', fontWeight: 'bold', marginTop: '5px' }}>
                                             {errorMessages.complement}
-                                        </div>)}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -606,10 +635,8 @@ export default function CustomerDialog(props) {
                         background: 'linear-gradient(45deg,#6610F2,#741FFF)',
                         color: 'white',
                         width: '80px',
-                        height: '40px',
-                        fontWeight: 'bold',
-                        marginBottom: '80px',
-                        boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}/>
+                        height: '30px',
+                        fontWeight: 'bold'}} />
             </form>
         </Dialog >
     )

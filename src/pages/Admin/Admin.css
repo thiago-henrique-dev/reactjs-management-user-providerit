@@ -1,0 +1,20 @@
+.admin-container {
+    margin-top: 20px;
+  }
+  
+  .welcome-message {
+    font-size: 15px;
+    margin-left: 250px;
+    font-weight: bold;
+  }
+  
+  .username {
+    color: blue;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  .username:hover {
+    color: darkblue;
+  }
+  

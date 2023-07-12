@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.container h1 {
+  margin-top: 25px;
+}
+
+.container form .input-text {
+  margin-bottom: 10px;
+}
+
+.container form .button {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin-bottom: 10px;
+  margin-left: 15px;
+}
+
+.container form .save-button {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 280px;
+}

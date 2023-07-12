@@ -31,26 +31,25 @@ export default function ConfirmLogout() {
         visible={visible}
         onHide={() => setVisible(false)}
         message="Deseja realmente sair?"
-        icon="pi pi-exclamation-triangle"
-        style={{     boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', color: 'black', 
-        backgroundColor: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))',
-        minWidth: '12rem', background: '#f8f9fa' }}
+        style={{ fontSize: '16px'}}
         acceptClassName="p-button"
         acceptLabel="Sim"
         rejectClassName="p-button"
+        rejectLabel="Não"
         accept={accept}
       />
-      <div className="card flex justify-content-center">
+      <div className="">
         <Button
           ref={buttonEl}
           onClick={() => setVisible(true)}
           label="Sair"
           style={{  background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))',
           color: 'white',
-          width: '120px',
+          width: '160px',
           height: '30px',
           fontWeight: 'bold',
-          boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
+          marginLeft: '120px'
+
         }}
         />
       </div>

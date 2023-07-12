@@ -1,0 +1,163 @@
+.form__registration {
+    width: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title__form {
+  font-weight: 600;
+  color: black;
+  font-size: 16px;
+  margin-right: auto;
+}
+
+.form__address {
+    font-size: 11px;
+    color: black;
+}
+
+.form__input {
+    padding: 2px 2px 2px;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.form__group {
+  flex-basis: calc(33% - 1px);
+  margin-bottom: 20px;
+}
+
+
+.form__input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+  input::placeholder {
+    color: gray;
+    font-weight: bold;
+  }
+
+  .input-text {
+    width: 230px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .input-text.error {
+    border: 1px solid red;
+  }
+  
+  .input-label {
+    font-weight: bold;
+  }
+  
+
+  .error-message {
+    font-size: 11px;
+    color: red;
+    transition: color 0.2s ease-in-out;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-group .input-text {
+    width: 170px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .input-group .input-text.error {
+    border: 1px solid red;
+  }
+  
+  .input-group .error-message {
+    font-size: 11px;
+    color: red;
+    transition: color 0.2s ease-in-out;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+  
+  .input-group .invalid-phone {
+    font-size: 10px;
+    color: red;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+  
+  .form__group .valid-cpf {
+    font-size: 11px;
+    transition: color 0.2s ease-in-out;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+  
+  .form__group .valid-cpf .invalid-cpf {
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+  }
+  
+  .form__group .valid-cpf .valid-cpf {
+    margin-left: 15px;
+    font-size: 11px;
+    color: green;
+    font-weight: bold;
+  }
+  
+  .label-gender {
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+
+  .label-othergender {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .title__birthdate {
+    font-weight: bold;
+    color: gray;
+    font-size: 12px;
+    margin-left: 12px;
+  }
+
+  .title__gender {
+    font-weight: bold;
+    color: gray;
+    font-size: 12px;
+    margin-left: 12px;
+  }
+
+  .title__address {
+    font-weight: bold;
+    color: gray;
+    font-size: 14px;
+    margin-left: 230px;
+  }
+
+  .title__dataclient {
+    font-weight: bold;
+    color: gray;
+    font-size: 14px;
+    margin-right: 75px;
+    
+  }

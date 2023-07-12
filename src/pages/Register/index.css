@@ -1,3 +1,97 @@
 .invalid-input {
     border: 1px solid red;
   }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.content {
+    margin-bottom: 70px;
+}
+
+.logo {
+    background: linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237));
+    margin-left: 50px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+}
+
+.title {
+    margin-top: 20px;
+    margin-bottom: 25px;
+    padding: 12px 12px;
+    color: white;
+    background: linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237));
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.form-field {
+    margin-bottom: 25px;
+}
+
+.p-float-label input {
+    width: 300px;
+    border: 1px solid #ced4da;
+}
+
+.p-float-label .input.error {
+    border: 1px solid red;
+}
+
+.p-float-label label {
+    font-weight: bold;
+}
+
+.p-float-label p {
+    margin-top: 5px;
+    font-size: 12px;
+    color: red;
+    font-weight: bold;
+}
+
+.error-message {
+    
+    margin-top: 20px;
+    font-size: 14px;
+    color: red;
+    font-weight: bold;
+}
+
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+.link-text {
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s, font-size 0.6s;
+}
+
+.link-text:hover {
+  color: darkblue;
+  transition: color 0.3s, font-size 0.6s;
+
+}
+
+.register-button {
+    background: linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237));
+    width: 100%;
+    max-width: 450px;
+    margin-top: 10px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+}
+
+.button-text {
+    margin: auto;
+    font-weight: bold;
+}

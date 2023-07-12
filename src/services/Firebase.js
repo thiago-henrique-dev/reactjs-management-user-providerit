@@ -4,13 +4,20 @@ import { getFirestore } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsBnjN3KALt-Qj7JWVQ-Hto3t2xnvonhE",
-  authDomain: "users-bf926.firebaseapp.com",
-  projectId: "users-bf926",
-  storageBucket: "users-bf926.appspot.com",
-  messagingSenderId: "725037030979",
-  appId: "1:725037030979:web:ec8afbd540be36ac793ef6",
-  measurementId: "G-W9MSLK9SVZ"
+  apiKey: "AIzaSyCHBBGMSJaipc0vLX9v-LBhG0ILeRjzdc0",
+
+  authDomain: "provider-users.firebaseapp.com",
+
+  projectId: "provider-users",
+
+  storageBucket: "provider-users.appspot.com",
+
+  messagingSenderId: "333640660530",
+
+  appId: "1:333640660530:web:b89228e4530a70819a6e2b",
+
+  measurementId: "G-0H4G5EZLXJ"
+
   };
   
   const firebaseApp = initializeApp(firebaseConfig);

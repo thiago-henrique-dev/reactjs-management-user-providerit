@@ -20,12 +20,7 @@ export default function ConfirmUserDelete(props) {
         ref={buttonEl}
         icon="pi pi-trash"
         style={{
-          backgroundColor: 'transparent',
-          border: 'none',
           background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))',
-          color: 'white',
-          fontWeight: 'bold',
-          boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
         }}
         onClick={() => setVisible(true)}
         tooltip="Excluir"
@@ -36,13 +31,6 @@ export default function ConfirmUserDelete(props) {
         visible={visible}
         onHide={() => setVisible(false)}
         message="Deseja realmente excluir o usuário?"
-        icon="pi pi-exclamation-triangle"
-        style={{
-          color: 'black',
-          minWidth: '12rem',
-          background: '#f8f9fa',
-          boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'
-        }}
         acceptClassName="p-button"
         acceptLabel="Sim"
         rejectClassName="p-button"

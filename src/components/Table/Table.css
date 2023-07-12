@@ -1,0 +1,142 @@
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 800px;
+}
+
+.p-datatable {
+  max-width: 1000px; 
+  width: 100%;
+}
+
+.p-datatable th,
+.p-datatable td {
+  width: 20%;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-icon {
+  margin-right: 1rem;
+}
+
+.input-search {
+  width: 380px;
+  height: 40px;
+  margin-left: 0.5rem;
+}
+
+.add-user-button {
+  background-color: white;
+  font-weight: bold;
+  height: 40px;
+  min-width: 150px;
+}
+
+.user-details-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 50%;
+  margin-right: 10px;
+}
+
+.user-info-label {
+  font-size: 11px;
+  color: black;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.user-info-input {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+
+.user-info-input-label {
+  font-size: 14px;
+  color: black;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.user-info-input-text {
+  width: 310px;
+  height: 40px;
+  margin-left: 5px;
+}
+
+.user-info-birthdate {
+  margin-right: 20px;
+  width: 365px;
+  height: 40px;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.actions-column {
+  min-width: 12rem;
+  background: none;
+  color: black;
+}
+
+.actions-column .actions-container {
+  justify-content: space-between;
+}
+
+.actions-container .edit-button {
+  margin-right: 60px;
+}
+
+
+.edit-button {
+  background-color: linear-gradient(45deg, rgb(53, 11, 128), rgb(105, 28, 237));
+  border: none;
+  background: linear-gradient(45deg, rgb(53, 11, 128), rgb(105, 28, 237));
+  color: white;
+  font-weight: bold;
+}
+
+.name-column {
+  min-width: 12rem;
+  background: none;
+  color: black;
+}
+
+.birthdate-column {
+  min-width: 12rem;
+  background: none;
+  color: black;
+}
+
+.phone-column {
+  min-width: 12rem;
+  background: none;
+  color: black;
+}
+
+
+
+
+

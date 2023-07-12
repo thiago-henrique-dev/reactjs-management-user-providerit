@@ -4,22 +4,16 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api'
 import { InputText } from "primereact/inputtext";
-import { formatDateDialogEdit } from '../Dialog/DialogValidator';
-import { db } from '../../services/Firebase'
-import DialogEdit from '../Dialog/DialogEdit'
-import CustomerDialog from "../Dialog/Dialog";
+import { formatDateDialogEdit } from '../Dialog/Validation/DialogValidator';
+import api from '../../services/apiURL'
+import DialogEdit from '../../components/Dialog/DialogEdit/DialogEdit'
+import CustomerDialog from "../../components/Dialog/Dialog/Dialog";
 import ConfirmLogout from '../Buttons/ButtonLogout';
 import ConfirmUserDelete from '../Buttons/ButtonDelete'
-import {
-  collection,
-  onSnapshot,
-  doc,
-  deleteDoc
-} from 'firebase/firestore'
 import "alertifyjs/build/css/alertify.min.css";
 import alertify from "alertifyjs";
-
-import './index.css'
+import axios from 'axios';
+import './Table.css'
 
 export default function Table() {
   const [users, setUsers] = useState({ customers: [] });
@@ -58,23 +52,32 @@ export default function Table() {
     setFilters(_filters)
     setGlobalFilterValue(value)
   }
-  
-  useEffect(() => {
-    const loadUsers = onSnapshot(collection(db, "users"), (snapshot) => {
-      const customers = snapshot.docs.map((doc) => {
-        const customerData = doc.data();
-        return {
-          id: doc.id,
-          ...customerData,
-        };
-      });
-  
-      setUsers(oldState => ({ ...oldState, customers }));
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get('/clientes/list');
+      const responseData = response.data;
+
+      const customers = [];
+      for (let i = 0; i < responseData.length; i++) {
+        const customer = responseData[i];
+        const { id, ...customerData } = customer;
+        customers.push({ id, ...customerData });
+      }
+
+      console.log(customers);
+      setUsers((oldState) => ({ ...oldState, customers }));
       setLoading(false);
-    });
-  
-    return () => loadUsers();
+    } catch (error) {
+      console.error('Erro ao carregar os usuários:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    return () => {
+    };
   }, []);
+
 
   const handleCustomerDialogToggle = (customer) => {
     setCustomerToEdit(customer);
@@ -82,10 +85,10 @@ export default function Table() {
       const formattedBirthdate = formatDateDialogEdit(customer.birthdate);
       const [ano, mes, dia] = formattedBirthdate.split('-');
       const birthdateFormatted = `${ano}-${dia}-${mes}`;
-  
+
       setForm({
         id: customer.id,
-        userAdmin: customer.userAdmin,
+        nameAdmin: customer.nameAdmin,
         emailAdmin: customer.emailAdmin,
         name: customer.name,
         phone: customer.phone,
@@ -104,14 +107,14 @@ export default function Table() {
     }
     setCustomerDialogVisible(!customerDialogVisible);
   };
-  
-  const handleUserDelete = async (user) => {
-    const docRef = doc(db, 'users', user.id);
-    try {
-      await deleteDoc(docRef);
-      console.log('Usuário excluído com sucesso:', user);
-      alertify.success("Usuario excluido com sucesso!", { id: 'alertify-notifier' });
 
+  const handleUserDelete = async (user) => {
+    try {
+      await api.delete(`/clientes/${user.id}`);
+      alertify.success('Usuário excluído com sucesso!', { id: 'alertify-notifier' });
+      setTimeout(() => {
+        fetchUsers();
+      }, 500);
     } catch (error) {
       console.error('Erro ao excluir o usuário:', error);
     }
@@ -123,62 +126,66 @@ export default function Table() {
 
   const header = (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <span className="p-input-icon-left" style={{ marginRight: '1rem' }}>
-          <i className="pi pi-search" style={{ marginLeft: '12px' }} />
+      <div className="search-bar">
+        <span className="p-input-icon-left search-icon">
+          <i className="pi pi-search" />
           <InputText
             value={globalFilterValue}
             onChange={onGlobalFilterChange}
             placeholder="Pesquisar "
-            style={{ width: '380px', height: '40px', marginLeft: '0.5rem' }}
+            className="input-search"
           />
         </span>
         <div>
           <Button
             label="Cadastrar Usuário"
             icon="pi pi-external-link"
-            style={{
-              background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))',
-              fontWeight: 'bold',
-              height: '40px',
-              minWidth: '150px',
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}
-            onClick={handleCustomerDialogToggleCreate}/>
+            className="add-user-button"
+            style={{ background: 'linear-gradient(45deg, #5C0FDD, #691CEC)', fontWeight: '600' }}
+            onClick={handleCustomerDialogToggleCreate}
+          />
           <CustomerDialog
             visible={customerDialogVisibleCreate}
-            onHide={handleCustomerDialogToggleCreate}/>
+            onHide={handleCustomerDialogToggleCreate}
+            className="user-dialog"
+            fetchUsers={fetchUsers}
+          />
         </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '50%' }}>
-          <p style={{ fontSize: '11px', color: 'black', fontWeight: 'bold', marginTop: '5px' }}>Usuario da tabela selecionado</p>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ fontSize: '14px', color: 'black', fontWeight: 'bold', marginBottom: '10px' }} htmlFor="birthdate">Nome</label>
-            <InputText
-              id="name"
-              className="p-inputtext"
-              style={{ width: '310px', height: '40px' }}
-              value={selectedRow?.name || ''}
-              onChange={(e) => setSelectedRow({ ...selectedRow, name: e.target.value })}
-              disabled/>
+      <div className="user-details-container">
+        <div className="user-info">
+          <p className="user-info-label">Usuário da tabela selecionado</p>
+          <div className="user-info-input">
+            <div className="input-wrapper">
+              <label className="user-info-input-label" htmlFor="name">Nome</label>
+              <InputText
+                id="name"
+                className="p-inputtext user-info-input-text"
+                value={selectedRow?.name || ''}
+                onChange={(e) => setSelectedRow({ ...selectedRow, name: e.target.value })}
+                disabled
+              />
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label style={{ fontSize: '14px', color: 'black', fontWeight: 'bold', marginBottom: '10px' }} htmlFor="birthdate">Data de nascimento</label>
-          <InputText
-            id="birthdate"
-            className="p-inputtext"
-            style={{ width: '365px', height: '40px' }}
-            value={selectedRow?.birthdate || ''}
-            onChange={(e) => setSelectedRow({ ...selectedRow, birthdate: e.target.value })}
-            disabled/>
+        <div className="user-info">
+          <div className="input-wrapper">
+            <label className="user-info-input-label" htmlFor="birthdate">Data de nascimento</label>
+            <InputText
+              id="birthdate"
+              className="p-inputtext user-info-birthdate"
+              value={selectedRow?.birthdate || ''}
+              onChange={(e) => setSelectedRow({ ...selectedRow, birthdate: e.target.value })}
+              disabled
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className='content-wrapper'>
       <div className="card">
         <DataTable
           value={users.customers}
@@ -205,10 +212,8 @@ export default function Table() {
             filterPlaceholder="Nome"
             filter
             sortable
-            style={{
-              minWidth: '12rem',
-              background: '',
-              color: 'black'}}/>
+            className="name-column"
+          />
           <Column
             field="birthdate"
             header="Data de nascimento"
@@ -217,10 +222,8 @@ export default function Table() {
             dateType="date"
             sortable
             filter
-            style={{
-              minWidth: '12rem',
-              background: '',
-              color: 'black'}}/>
+            className="birthdate-column"
+          />
           <Column
             field="phone"
             header="Telefone"
@@ -228,49 +231,43 @@ export default function Table() {
             sortable
             filter
             filterPlaceholder="Telefone"
-            style={{
-              minWidth: '12rem',
-              background: '',
-              color: 'black'}}/>
+            className="phone-column"
+          />
           <Column
             field="Ações"
             header="Ações"
             sortable
-            style={{
-              minWidth: '12rem',
-              background: '',
-              color: 'black'}}
+            className="actions-column"
             body={(rowData) => (
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button
-                icon="pi pi-pencil"
-                style={{
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  boxShadow: 'none',
-                  background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)'}}
-                onClick={() => handleCustomerDialogToggle(rowData)}
-                tooltip="Editar"/>
-              <ConfirmUserDelete
-                handleUserDelete={handleUserDelete}
-                rowData={rowData}/>
-            </div>
+              <div className="actions-container">
+                <div className="actions-wrapper">
+                  <Button
+                    icon="pi pi-pencil"
+                    className="edit-button"
+                    style={{ background: 'linear-gradient(45deg, #5C0FDD, #691CEC)' }}
+                    onClick={() => handleCustomerDialogToggle(rowData)}
+                    tooltip="Editar"
+                  />
+                  <ConfirmUserDelete
+                    handleUserDelete={handleUserDelete}
+                    rowData={rowData}
+                  />
+                </div>
+              </div>
             )}
           />
         </DataTable>
       </div>
-      <div style={{ marginTop: '1rem' }}>
+      <div className='actions-container'>
         {customerToEdit && (
           <DialogEdit
             visible={customerDialogVisible}
             onHide={handleCustomerDialogToggle}
             form={form}
-            setForm={setForm}/>)}
+            fetchUsers={fetchUsers}
+            setForm={setForm} />)}
       </div>
-      <div style={{ marginTop: '1rem' }}>
+      <div>
         <ConfirmLogout />
       </div>
     </div>

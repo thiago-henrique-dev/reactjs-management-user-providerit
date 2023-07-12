@@ -5,7 +5,7 @@ import { addDoc, collection } from 'firebase/firestore';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 
-import './index.css';
+import './Name.css';
 
 const Formulario = () => {
   const [name, setName] = useState('');
@@ -31,7 +31,7 @@ const Formulario = () => {
     const detailUserString = localStorage.getItem('detailUser');
     const detailUser = JSON.parse(detailUserString);
 
-    const { uid, email } = detailUser; // Extrair uid e email do objeto
+    const { uid, email } = detailUser;
 
     const customerInfo = {
       uid: uid,
@@ -51,25 +51,30 @@ const Formulario = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="info-user" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-      <div style={{ marginBottom: '100px' }}>
+    <div className="container">
+      <div className="info-user">
         <h1>Qual é seu nome?</h1>
         <form onSubmit={handleSubmit}>
-          <InputText type="text" 
-                value={name} 
-                onChange={handleNomeChange} 
-                style={{ marginBottom: '10px' }} />
+          <InputText
+            type="text"
+            value={name}
+            onChange={handleNomeChange}
+            className="input-text"
+          />
           <Button
             type="submit"
             onClick={handleConfirmation}
-            style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))', marginBottom: '10px', marginLeft: '15px' }}
+            className="button"
+            style={{ background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))'}}
           >
-            <span style={{ margin: 'auto' }}>✔</span>
+            <span>✔</span>
           </Button>
           {showSaveButton && (
             <div>
-              <Button style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)',background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))', width: '100%', maxWidth: '280px' }}>
-                <span style={{ margin: 'auto' }}>Prosseguir</span>
+              <Button
+                className="save-button"
+                style={{ background: 'linear-gradient(45deg, rgb(92, 15, 221), rgb(105, 28, 237))'}}>
+                <span>Prosseguir</span>
               </Button>
             </div>
           )}
@@ -77,6 +82,7 @@ const Formulario = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Formulario;

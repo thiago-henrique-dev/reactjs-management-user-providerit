@@ -1,6 +1,6 @@
-
 import React from 'react';
 import Table from '../../components/Table/Table';
+import './Admin.css';
 
 export default function Admin() {
   const detailUserString = localStorage.getItem('detailUser');
@@ -8,12 +8,11 @@ export default function Admin() {
   const nome = detailUser.name;
 
   return (
-    <>
-    <p style={{ fontSize: '22px', marginLeft: '200px', fontWeight: 'bold' }}>
-      Olá <span style={{ color: 'blue' }}>{nome}</span>! Seja bem-vindo!
-    </p>   
+    <div className="admin-container">
+      <p className="welcome-message">
+        Olá <span className="username">{nome}!</span> Seja bem-vindo ao sistema de clientes da <span className='username'>Provider IT!</span>
+      </p>   
       <Table />
-    </>
+    </div>
   );
 }
-
